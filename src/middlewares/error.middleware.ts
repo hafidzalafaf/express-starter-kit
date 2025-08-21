@@ -69,15 +69,17 @@ export const errorHandler = (
   // Handle PostgreSQL errors
   if (error.name === 'QueryFailedError' || (error as any).code) {
     const pgError = error as any;
-    
-    if (pgError.code === '23505') { // Unique constraint violation
+
+    if (pgError.code === '23505') {
+      // Unique constraint violation
       statusCode = 409;
       response = {
         success: false,
         message: 'Resource already exists',
         error: 'DUPLICATE_ENTRY',
       };
-    } else if (pgError.code === '23503') { // Foreign key constraint violation
+    } else if (pgError.code === '23503') {
+      // Foreign key constraint violation
       statusCode = 400;
       response = {
         success: false,
@@ -105,14 +107,8 @@ export const errorHandler = (
 /**
  * 404 Not Found handler
  */
-export const notFoundHandler = (
-  req: Request,
-  res: Response
-): void => {
-  const response = createErrorResponse(
-    `Route ${req.method} ${req.path} not found`,
-    'NOT_FOUND'
-  );
-  
+export const notFoundHandler = (req: Request, res: Response): void => {
+  const response = createErrorResponse(`Route ${req.method} ${req.path} not found`, 'NOT_FOUND');
+
   res.status(404).json(response);
 };

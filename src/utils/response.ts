@@ -3,10 +3,7 @@ import { ApiResponse, PaginatedResponse, ValidationError } from '@/types/common.
 /**
  * Create a standardized success response
  */
-export const createSuccessResponse = <T>(
-  data: T,
-  message: string = 'Success'
-): ApiResponse<T> => ({
+export const createSuccessResponse = <T>(data: T, message: string = 'Success'): ApiResponse<T> => ({
   success: true,
   data,
   message,
@@ -15,10 +12,7 @@ export const createSuccessResponse = <T>(
 /**
  * Create a standardized error response
  */
-export const createErrorResponse = (
-  message: string,
-  error?: string
-): ApiResponse => ({
+export const createErrorResponse = (message: string, error?: string): ApiResponse => ({
   success: false,
   message,
   error,
@@ -71,8 +65,8 @@ export const validatePagination = (page?: string, limit?: string) => {
   const parsedLimit = limit ? parseInt(limit, 10) : 10;
 
   const validPage = !isNaN(parsedPage) && parsedPage > 0 ? parsedPage : 1;
-  const validLimit = !isNaN(parsedLimit) && parsedLimit > 0 && parsedLimit <= 100 
-    ? parsedLimit : 10;
+  const validLimit =
+    !isNaN(parsedLimit) && parsedLimit > 0 && parsedLimit <= 100 ? parsedLimit : 10;
 
   return { page: validPage, limit: validLimit };
 };

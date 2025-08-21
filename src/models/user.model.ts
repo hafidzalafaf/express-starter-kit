@@ -11,13 +11,8 @@ export class UserModel {
       VALUES ($1, $2, $3, $4)
       RETURNING id, username, email, role, created_at, updated_at
     `;
-    
-    const values = [
-      userData.username,
-      userData.email,
-      userData.password,
-      userData.role || 'user',
-    ];
+
+    const values = [userData.username, userData.email, userData.password, userData.role || 'user'];
 
     const result = await pool.query(query, values);
     return result.rows[0];
@@ -57,7 +52,8 @@ export class UserModel {
    * Update user refresh token
    */
   static async updateRefreshToken(userId: number, refreshToken: string | null): Promise<void> {
-    const query = 'UPDATE users SET refresh_token = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2';
+    const query =
+      'UPDATE users SET refresh_token = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2';
     await pool.query(query, [refreshToken, userId]);
   }
 
@@ -89,9 +85,12 @@ export class UserModel {
   /**
    * Get all users (admin only)
    */
-  static async findAll(page: number = 1, limit: number = 10): Promise<{ users: UserResponse[]; total: number }> {
+  static async findAll(
+    page: number = 1,
+    limit: number = 10
+  ): Promise<{ users: UserResponse[]; total: number }> {
     const offset = (page - 1) * limit;
-    
+
     const countQuery = 'SELECT COUNT(*) FROM users';
     const countResult = await pool.query(countQuery);
     const total = parseInt(countResult.rows[0].count);
@@ -102,9 +101,9 @@ export class UserModel {
       ORDER BY created_at DESC 
       LIMIT $1 OFFSET $2
     `;
-    
+
     const result = await pool.query(query, [limit, offset]);
-    
+
     return {
       users: result.rows,
       total,

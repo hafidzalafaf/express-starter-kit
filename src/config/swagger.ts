@@ -213,14 +213,18 @@ const options: swaggerJsdoc.Options = {
 const specs = swaggerJsdoc(options);
 
 export const setupSwagger = (app: Application): void => {
-  app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs, {
-    explorer: true,
-    customCss: '.swagger-ui .topbar { display: none }',
-    customSiteTitle: config.swagger.title,
-    swaggerOptions: {
-      persistAuthorization: true,
-    },
-  }));
+  app.use(
+    '/docs',
+    swaggerUi.serve,
+    swaggerUi.setup(specs, {
+      explorer: true,
+      customCss: '.swagger-ui .topbar { display: none }',
+      customSiteTitle: config.swagger.title,
+      swaggerOptions: {
+        persistAuthorization: true,
+      },
+    })
+  );
 
   // Swagger JSON endpoint
   app.get('/docs.json', (req: any, res: any) => {

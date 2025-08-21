@@ -6,11 +6,13 @@ import { ValidationError } from '@/types/common.types';
 /**
  * Validation middleware factory
  */
-export const validate = (schema: Joi.ObjectSchema, target: 'body' | 'params' | 'query' = 'body') => {
+export const validate = (
+  schema: Joi.ObjectSchema,
+  target: 'body' | 'params' | 'query' = 'body'
+) => {
   return (req: Request, res: Response, next: NextFunction): void => {
-    const dataToValidate = target === 'body' ? req.body : 
-                          target === 'params' ? req.params : 
-                          req.query;
+    const dataToValidate =
+      target === 'body' ? req.body : target === 'params' ? req.params : req.query;
 
     const { error, value } = schema.validate(dataToValidate, {
       abortEarly: false,
@@ -47,16 +49,17 @@ export const validate = (schema: Joi.ObjectSchema, target: 'body' | 'params' | '
 export const sanitizeInput = (req: Request, res: Response, next: NextFunction) => {
   const sanitize = (obj: any): any => {
     if (typeof obj === 'string') {
-      return obj.trim()
+      return obj
+        .trim()
         .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // Remove script tags
         .replace(/javascript:/gi, '') // Remove javascript: protocol
         .replace(/on\w+\s*=/gi, ''); // Remove event handlers
     }
-    
+
     if (Array.isArray(obj)) {
       return obj.map(sanitize);
     }
-    
+
     if (obj && typeof obj === 'object') {
       const sanitized: any = {};
       Object.keys(obj).forEach(key => {
@@ -64,13 +67,34 @@ export const sanitizeInput = (req: Request, res: Response, next: NextFunction) =
       });
       return sanitized;
     }
-    
+
     return obj;
   };
 
-  req.body = sanitize(req.body);
-  req.query = sanitize(req.query);
-  req.params = sanitize(req.params);
-  
+  // Sanitize body
+  if (req.body) {
+    req.body = sanitize(req.body);
+  }
+
+  // Sanitize query safely
+  if (req.query && Object.keys(req.query).length > 0) {
+    try {
+      const sanitizedQuery = sanitize(req.query);
+      Object.keys(req.query).forEach(key => {
+        if (req.query[key] !== undefined) {
+          (req.query as any)[key] = sanitizedQuery[key];
+        }
+      });
+    } catch (error) {
+      // If query can't be modified, skip sanitization
+      console.warn('Could not sanitize query parameters:', error);
+    }
+  }
+
+  // Sanitize params
+  if (req.params) {
+    req.params = sanitize(req.params);
+  }
+
   next();
 };

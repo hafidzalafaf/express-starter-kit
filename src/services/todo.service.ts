@@ -48,7 +48,7 @@ export class TodoService {
     if (!todo) {
       throw new Error('Todo not found or no changes made');
     }
-    
+
     logger.info(`Todo updated successfully: ${id} by user ${userId}`);
     return todo;
   }
@@ -61,7 +61,7 @@ export class TodoService {
     if (!deleted) {
       throw new Error('Todo not found');
     }
-    
+
     logger.info(`Todo deleted successfully: ${id} by user ${userId}`);
   }
 
@@ -96,7 +96,7 @@ export class TodoService {
     if (!todo) {
       throw new Error('Todo not found or no changes made');
     }
-    
+
     logger.info(`Todo updated by admin: ${id}`);
     return todo;
   }
@@ -109,7 +109,7 @@ export class TodoService {
     if (!deleted) {
       throw new Error('Todo not found');
     }
-    
+
     logger.info(`Todo deleted by admin: ${id}`);
   }
 }

@@ -31,7 +31,7 @@ export const connectDB = async (): Promise<void> => {
 export const initializeDB = async (): Promise<void> => {
   try {
     const client = await pool.connect();
-    
+
     // Create users table
     await client.query(`
       CREATE TABLE IF NOT EXISTS users (

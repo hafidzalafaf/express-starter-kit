@@ -11,7 +11,7 @@ export class TodoModel {
       VALUES ($1, $2, $3)
       RETURNING id, title, description, status, user_id, created_at, updated_at
     `;
-    
+
     const values = [todoData.title, todoData.description || null, userId];
     const result = await pool.query(query, values);
     return result.rows[0];
@@ -85,10 +85,10 @@ export class TodoModel {
       ORDER BY created_at DESC 
       LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}
     `;
-    
+
     values.push(limit, offset);
     const result = await pool.query(query, values);
-    
+
     return {
       todos: result.rows,
       total,
@@ -138,10 +138,10 @@ export class TodoModel {
       ORDER BY t.created_at DESC 
       LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}
     `;
-    
+
     values.push(limit, offset);
     const result = await pool.query(query, values);
-    
+
     return {
       todos: result.rows,
       total,
@@ -201,10 +201,7 @@ export class TodoModel {
   /**
    * Admin update todo (can update any todo)
    */
-  static async adminUpdate(
-    id: number,
-    updates: UpdateTodoRequest
-  ): Promise<TodoResponse | null> {
+  static async adminUpdate(id: number, updates: UpdateTodoRequest): Promise<TodoResponse | null> {
     const setClause = [];
     const values = [];
     let paramCount = 0;

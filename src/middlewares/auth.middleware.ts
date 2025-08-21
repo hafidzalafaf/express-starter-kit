@@ -14,7 +14,7 @@ export const authenticate = (
 ): void => {
   try {
     const token = extractToken(req.headers.authorization);
-    
+
     if (!token) {
       res.status(401).json(createErrorResponse('Access token is required'));
       return;
@@ -22,11 +22,11 @@ export const authenticate = (
 
     const decoded = verifyAccessToken(token);
     req.user = decoded;
-    
+
     next();
   } catch (error) {
     logger.error('Authentication error:', error);
-    
+
     if (error instanceof Error) {
       if (error.name === 'TokenExpiredError') {
         res.status(401).json(createErrorResponse('Token expired'));
@@ -37,7 +37,7 @@ export const authenticate = (
         return;
       }
     }
-    
+
     res.status(401).json(createErrorResponse('Authentication failed'));
   }
 };
@@ -71,12 +71,12 @@ export const optionalAuth = (
 ): void => {
   try {
     const token = extractToken(req.headers.authorization);
-    
+
     if (token) {
       const decoded = verifyAccessToken(token);
       req.user = decoded;
     }
-    
+
     next();
   } catch (error) {
     // Don't fail, just continue without user

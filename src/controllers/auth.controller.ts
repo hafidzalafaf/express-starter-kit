@@ -12,10 +12,8 @@ export class AuthController {
     try {
       const userData: CreateUserRequest = req.body;
       const user = await AuthService.register(userData);
-      
-      res.status(201).json(
-        createSuccessResponse(user, 'User registered successfully')
-      );
+
+      res.status(201).json(createSuccessResponse(user, 'User registered successfully'));
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json(createErrorResponse(error.message));
@@ -32,10 +30,8 @@ export class AuthController {
     try {
       const loginData: LoginRequest = req.body;
       const authResponse = await AuthService.login(loginData);
-      
-      res.status(200).json(
-        createSuccessResponse(authResponse, 'Login successful')
-      );
+
+      res.status(200).json(createSuccessResponse(authResponse, 'Login successful'));
     } catch (error) {
       if (error instanceof Error) {
         res.status(401).json(createErrorResponse(error.message));
@@ -52,10 +48,8 @@ export class AuthController {
     try {
       const { refreshToken } = req.body;
       const tokens = await AuthService.refreshToken(refreshToken);
-      
-      res.status(200).json(
-        createSuccessResponse(tokens, 'Token refreshed successfully')
-      );
+
+      res.status(200).json(createSuccessResponse(tokens, 'Token refreshed successfully'));
     } catch (error) {
       if (error instanceof Error) {
         res.status(401).json(createErrorResponse(error.message));
@@ -76,10 +70,8 @@ export class AuthController {
       }
 
       await AuthService.logout(req.user.userId);
-      
-      res.status(200).json(
-        createSuccessResponse(null, 'Logout successful')
-      );
+
+      res.status(200).json(createSuccessResponse(null, 'Logout successful'));
     } catch (error) {
       next(error);
     }
@@ -88,7 +80,11 @@ export class AuthController {
   /**
    * Get current user profile
    */
-  static async getProfile(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+  static async getProfile(
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       if (!req.user) {
         res.status(401).json(createErrorResponse('Authentication required'));
@@ -96,10 +92,8 @@ export class AuthController {
       }
 
       const user = await AuthService.getProfile(req.user.userId);
-      
-      res.status(200).json(
-        createSuccessResponse(user, 'Profile retrieved successfully')
-      );
+
+      res.status(200).json(createSuccessResponse(user, 'Profile retrieved successfully'));
     } catch (error) {
       if (error instanceof Error) {
         res.status(404).json(createErrorResponse(error.message));

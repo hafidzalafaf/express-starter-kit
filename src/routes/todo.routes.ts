@@ -2,7 +2,12 @@ import { Router } from 'express';
 import { TodoController } from '@/controllers/todo.controller';
 import { validate } from '@/middlewares/validation.middleware';
 import { authenticate, authorize } from '@/middlewares/auth.middleware';
-import { createTodoSchema, updateTodoSchema, todoIdSchema, todoQuerySchema } from '@/utils/validation/todo.validation';
+import {
+  createTodoSchema,
+  updateTodoSchema,
+  todoIdSchema,
+  todoQuerySchema,
+} from '@/utils/validation/todo.validation';
 
 const router = Router();
 
@@ -194,7 +199,8 @@ router.get('/:id', validate(todoIdSchema, 'params'), TodoController.getTodoById)
  *                 data:
  *                   $ref: '#/components/schemas/TodoResponse'
  */
-router.put('/:id', 
+router.put(
+  '/:id',
   validate(todoIdSchema, 'params'),
   validate(updateTodoSchema),
   TodoController.updateTodo
@@ -273,9 +279,10 @@ router.delete('/:id', validate(todoIdSchema, 'params'), TodoController.deleteTod
  *       200:
  *         description: All todos retrieved successfully
  */
-router.get('/admin/all', 
+router.get(
+  '/admin/all',
   authorize('admin'),
-  validate(todoQuerySchema, 'query'), 
+  validate(todoQuerySchema, 'query'),
   TodoController.getAllTodos
 );
 
@@ -298,9 +305,10 @@ router.get('/admin/all',
  *       200:
  *         description: Todo retrieved successfully
  */
-router.get('/admin/:id', 
+router.get(
+  '/admin/:id',
   authorize('admin'),
-  validate(todoIdSchema, 'params'), 
+  validate(todoIdSchema, 'params'),
   TodoController.getAnyTodoById
 );
 
@@ -340,7 +348,8 @@ router.get('/admin/:id',
  *       200:
  *         description: Todo updated successfully
  */
-router.put('/admin/:id', 
+router.put(
+  '/admin/:id',
   authorize('admin'),
   validate(todoIdSchema, 'params'),
   validate(updateTodoSchema),
@@ -366,9 +375,10 @@ router.put('/admin/:id',
  *       200:
  *         description: Todo deleted successfully
  */
-router.delete('/admin/:id', 
+router.delete(
+  '/admin/:id',
   authorize('admin'),
-  validate(todoIdSchema, 'params'), 
+  validate(todoIdSchema, 'params'),
   TodoController.deleteAnyTodo
 );
 

@@ -1,6 +1,11 @@
 import { UserModel } from '@/models/user.model';
 import { CreateUserRequest, LoginRequest, AuthResponse, UserResponse } from '@/types/user.types';
-import { hashPassword, comparePassword, generateAccessToken, generateRefreshToken } from '@/utils/auth';
+import {
+  hashPassword,
+  comparePassword,
+  generateAccessToken,
+  generateRefreshToken,
+} from '@/utils/auth';
 import logger from '@/utils/logger';
 
 export class AuthService {
@@ -130,7 +135,7 @@ export class AuthService {
   ): Promise<void> {
     const user = await UserModel.findByEmail(''); // We need to get user by ID with password
     // For now, let's create a method to get user with password by ID
-    
+
     throw new Error('Method not implemented yet');
   }
 }
