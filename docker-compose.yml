@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: express-starter-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-express_starter}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - express-starter-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Express.js Application
+  api:
+    build: .
+    container_name: express-starter-api
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 3000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-express_starter}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - express-starter-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis (optional, for session storage or caching)
+  redis:
+    image: redis:7-alpine
+    container_name: express-starter-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - express-starter-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  express-starter-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
